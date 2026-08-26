@@ -7,17 +7,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SchoolApp.Models
 {
-    [Table("tbl_Students")]
     public class Student
     {
-        [Key]
         public int Id { get; set; }
-        [Required]
-        [MaxLength(100)]
-        public string FullName { get; set; } = string.Empty;
-        [Required]
-        public int MajorId { get; set; }
-        [ForeignKey("MajorId")]
-        public Major Major { get; set; } = null!;
+        public string FullName { get; set; } = "";
+        public string Gender { get; set; } = "";
+        public double GPA { get; set; }
     }
 }
