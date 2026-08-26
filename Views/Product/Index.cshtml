@@ -1,0 +1,22 @@
+@model IEnumerable<SchoolApp.Models.Product>
+
+<h2>បញ្ជីទំនិញ (Traditional Razor View)</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ឈ្មោះទំនិញ</th>
+            <th>តម្លៃ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>$@item.Price</td>
+            </tr>
+        }
+    </tbody>
+</table>

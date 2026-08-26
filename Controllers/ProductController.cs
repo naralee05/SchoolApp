@@ -10,19 +10,17 @@ using SchoolApp.Data;
 
 namespace SchoolApp.Controllers
 {
-    public class StudentController : Controller
+    public class ProductController : Controller
     {
         private readonly SchoolDbContext _context;
-
-        public StudentController(SchoolDbContext context)
+        public ProductController(SchoolDbContext context)
         {
             _context = context;
         }
-
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult>Index()
         {
-            var students = await _context.Students.ToListAsync();
-            return View(students);
+            var products = await _context.Products.ToListAsync();
+            return View(products);
         }
     }
 }

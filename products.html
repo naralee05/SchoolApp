@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head><title>Product API Client</title></head>
+<body>
+    <h2>បញ្ជីទំនិញ (Decoupled JS Fetch UI)</h2>
+    <button id="btnFetch">ទាញយកទិន្នន័យ API</button>
+
+    <table border="1" style="width:100%; margin-top:10px;">
+        <thead><tr><th>ID</th><th>ឈ្មោះទំនិញ</th><th>តម្លៃ</th></tr></thead>
+        <tbody id="productGrid"></tbody>
+    </table>
+
+    <script>
+        const btn = document.getElementById('btnFetch');
+        const grid = document.getElementById('productGrid');
+
+        btn.addEventListener('click', async () => {
+            grid.innerHTML = '<tr><td colspan="3">កំពុងដំណើរការ (Loading)...</td></tr>';
+            try {
+                const res = await fetch('https://localhost:7123/api/ProductApi');
+                const data = await res.json();
+                grid.innerHTML = '';
+                data.forEach(p => {
+                    grid.innerHTML += `<tr><td>${p.id}</td><td>${p.name}</td><td>$${p.price}</td></tr>`;
+                });
+            } catch (err) {
+                grid.innerHTML = '<tr><td colspan="3" style="color:red">CORS Error ឬ API មិនទាន់ Run!</td></tr>';
+            }
+        });
+    </script>
+</body>
+</html>

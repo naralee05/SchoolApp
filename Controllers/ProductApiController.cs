@@ -1,28 +1,28 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using SchoolApp.Data;
 
 namespace SchoolApp.Controllers
 {
-    public class StudentController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ProductApiController : ControllerBase
     {
         private readonly SchoolDbContext _context;
-
-        public StudentController(SchoolDbContext context)
+        public ProductApiController(SchoolDbContext context)
         {
             _context = context;
         }
 
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public async Task<IActionResult> GetProducts()
         {
-            var students = await _context.Students.ToListAsync();
-            return View(students);
+            var products = await _context.Products.ToListAsync();
+            return Ok(products);
         }
     }
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Decoupled Student UI</title>
+</head>
+<body>
+    <h2>បញ្ជីរាយនាមនិស្សិត (Decoupled JS Fetch UI)</h2>
+    <button id="btnLoad">ទាញយកទិន្នន័យ (Fetch API)</button>
+
+    <table border="1" style="margin-top:15px; width:100%;">
+        <thead>
+            <tr><th>ID</th><th>ឈ្មោះពេញ</th><th>ភេទ</th><th>GPA</th></tr>
+        </thead>
+        <tbody id="tableBody"><!-- ទុកឱ្យទទេ រង់ចាំ JS បាញ់បញ្ចូល --></tbody>
+    </table>
+
+    <script>
+        const apiUrl = 'https://localhost:7123/api/StudentApi';
+
+        document.getElementById('btnLoad').addEventListener('click', async () => {
+            try {
+                // ហៅ API តាមបែបអសមកាល
+                const response = await fetch(apiUrl);
+                const students = await response.json();
+
+                const tbody = document.getElementById('tableBody');
+                tbody.innerHTML = ''; // សំអាតទិន្នន័យចាស់
+
+                students.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${s.id}</td>
+                            <td>${s.fullName}</td>
+                            <td>${s.gender}</td>
+                            <td>${s.gpa}</td>
+                        </tr>`;
+                });
+            } catch (err) {
+                console.error('CORS ឬ Network Error:', err);
+            }
+        });
+    </script>
+</body>
+</html>

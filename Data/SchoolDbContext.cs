@@ -11,5 +11,6 @@ namespace SchoolApp.Data
     {
       public SchoolDbContext(DbContextOptions<SchoolDbContext> options) : base(options){}
         public DbSet<Student> Students => Set<Student>();
+        public DbSet<Product> Products => Set<Product>();
     }
 }
