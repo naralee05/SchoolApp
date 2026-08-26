@@ -1,0 +1,19 @@
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        fetch('/api/productsapi')
+            .then(res => res.json())
+            .then(data => {
+                const tbody = document.getElementById('product-table-body');
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    tbody.innerHTML += `<tr>
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>$${item.price}</td>
+                    <td>${item.category}</td>
+                </tr>`;
+                });
+            })
+            .catch(err => console.error("Error fetching data:", err));
+    });
+</script>

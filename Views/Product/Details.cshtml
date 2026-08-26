@@ -1,0 +1,31 @@
+@model SchoolApp.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm col-md-8 mx-auto">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="fa-solid fa-circle-info"></i> Product Details</h4>
+        </div>
+        <div class="card-body p-4">
+            <dl class="row">
+                <dt class="col-sm-4 text-muted">Product ID:</dt>
+                <dd class="col-sm-8 fw-bold">@Model.Id</dd>
+
+                <dt class="col-sm-4 text-muted">Product Name:</dt>
+                <dd class="col-sm-8">@Model.Name</dd>
+
+                <dt class="col-sm-4 text-muted">Price:</dt>
+                <dd class="col-sm-8 text-success fw-bold">$@Model.Price.ToString("F2")</dd>
+
+            </dl>
+        </div>
+        <div class="card-footer bg-light text-end">
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fa-solid fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>

@@ -2,42 +2,118 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Decoupled Student UI</title>
+    <!-- បញ្ចូល Bootstrap 5 និង FontAwesome -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-<body>
-    <h2>បញ្ជីរាយនាមនិស្សិត (Decoupled JS Fetch UI)</h2>
-    <button id="btnLoad">ទាញយកទិន្នន័យ (Fetch API)</button>
+<body class="bg-light">
 
-    <table border="1" style="margin-top:15px; width:100%;">
-        <thead>
-            <tr><th>ID</th><th>ឈ្មោះពេញ</th><th>ភេទ</th><th>GPA</th></tr>
-        </thead>
-        <tbody id="tableBody"><!-- ទុកឱ្យទទេ រង់ចាំ JS បាញ់បញ្ចូល --></tbody>
-    </table>
+    <div class="container mt-5">
+        <!-- Card សម្រាប់ខ្ចប់តារាង -->
+        <div class="card shadow-sm border-0">
+            <!-- ផ្នែកខាងលើនៃ Card (Header) -->
+            <div class="card-header bg-success text-white py-3 d-flex justify-content-between align-items-center">
+                <h2 class="mb-0 fs-4">
+                    <i class="fa-solid fa-user-graduate me-2"></i>បញ្ជីរាយនាមនិស្សិត
+                </h2>
+                <!-- ប៊ូតុងទាញយកទិន្នន័យ -->
+                <button id="btnLoad" class="btn btn-light text-success fw-bold shadow-sm">
+                    <i class="fa-solid fa-cloud-arrow-down me-1"></i> ទាញយកទិន្នន័យ
+                </button>
+            </div>
+
+            <!-- ផ្នែកតារាង (Body) -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0 align-middle">
+                        <thead class="table-dark">
+                            <tr>
+                                <th class="text-center" style="width: 15%;"><i class="fa-solid fa-id-card"></i> ID</th>
+                                <th><i class="fa-regular fa-user"></i> ឈ្មោះពេញ</th>
+                                <th><i class="fa-solid fa-venus-mars"></i> ភេទ</th>
+                                <th><i class="fa-solid fa-star"></i> GPA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- State ដើម មុនពេលចុចទាញយក -->
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-5">
+                                    <i class="fa-regular fa-folder-open fs-1 d-block mb-3"></i>
+                                    សូមចុចប៊ូតុងខាងលើដើម្បីទាញយកទិន្នន័យនិស្សិត...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         const apiUrl = 'https://localhost:7123/api/StudentApi';
+        const btnLoad = document.getElementById('btnLoad');
+        const tbody = document.getElementById('tableBody');
 
-        document.getElementById('btnLoad').addEventListener('click', async () => {
+        btnLoad.addEventListener('click', async () => {
+            // ១. ប្ដូរ UI ប៊ូតុង និងតារាង ពេលកំពុង Loading
+            btnLoad.disabled = true;
+            btnLoad.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span>កំពុងទាញយក...`;
+            
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" class="text-center py-5 text-success">
+                        <div class="spinner-border" role="status"></div>
+                        <div class="mt-2">កំពុងដំណើរការទិន្នន័យ...</div>
+                    </td>
+                </tr>`;
+
             try {
-                // ហៅ API តាមបែបអសមកាល
+                // ២. ហៅ API តាមបែបអសមកាល
                 const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Network response was not ok');
                 const students = await response.json();
 
-                const tbody = document.getElementById('tableBody');
                 tbody.innerHTML = ''; // សំអាតទិន្នន័យចាស់
 
-                students.forEach(s => {
-                    tbody.innerHTML += `
+                // ៣. បង្ហាញទិន្នន័យ (បើមាន)
+                if (students.length === 0) {
+                    tbody.innerHTML = `
                         <tr>
-                            <td>${s.id}</td>
-                            <td>${s.fullName}</td>
-                            <td>${s.gender}</td>
-                            <td>${s.gpa}</td>
+                            <td colspan="4" class="text-center text-muted py-4">មិនមានទិន្នន័យនិស្សិតទេ</td>
                         </tr>`;
-                });
+                } else {
+                    students.forEach(s => {
+                        // ដាក់ Icon ភេទ (គ្រាន់ជាឧទាហរណ៍)
+                        const genderIcon = (s.gender === 'ប្រុស' || s.gender === 'Male') 
+                            ? '<i class="fa-solid fa-mars text-primary"></i>' 
+                            : '<i class="fa-solid fa-venus text-danger"></i>';
+
+                        tbody.innerHTML += `
+                            <tr>
+                                <td class="text-center fw-bold text-secondary">#${s.id}</td>
+                                <td class="fw-medium text-dark">${s.fullName}</td>
+                                <td>${genderIcon} ${s.gender}</td>
+                                <td><span class="badge bg-warning text-dark fs-6">${s.gpa}</span></td>
+                            </tr>`;
+                    });
+                }
             } catch (err) {
+                // ៤. ចាប់កំហុស (Error Handling)
                 console.error('CORS ឬ Network Error:', err);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-danger py-5">
+                            <i class="fa-solid fa-triangle-exclamation fs-1 d-block mb-3"></i>
+                            <b>បរាជ័យក្នុងការទាញយកទិន្នន័យ!</b><br>
+                            <small class="text-muted">បញ្ហា៖ ${err.message} (សូមពិនិត្យមើល API របស់អ្នក)</small>
+                        </td>
+                    </tr>`;
+            } finally {
+                // ៥. ធ្វើឱ្យប៊ូតុងត្រលប់មកសភាពដើមវិញ
+                btnLoad.disabled = false;
+                btnLoad.innerHTML = `<i class="fa-solid fa-cloud-arrow-down me-1"></i> ទាញយកទិន្នន័យ`;
             }
         });
     </script>
